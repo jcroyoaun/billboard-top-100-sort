@@ -1,0 +1,36 @@
+const http = require('http');
+const { getChart } = require('billboard-top-100');
+
+const hostname = '127.0.0.1';
+const port = 3000;
+let songNamesByRanking = null;
+let sortedSongNamesByNameLength = null;
+
+const server = http.createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end(songNamesByRanking + '\n' + sortedSongNamesByNameLength);
+});
+
+server.listen(port, hostname, () => {
+  console.log(`Server running on http://${hostname}:${port}/`);
+});
+
+getChart('hot-10', '2022-04-01', (err, chart) => {
+  if (err) console.log(err);
+  topHundredList = chart;
+  sortArtistsByTitleLength(chart) 
+});
+
+
+function sortArtistsByTitleLength(chart) {
+  let songs = chart['songs']
+  let unsortedList = [];
+
+  for(var attributename in songs){
+    unsortedList.push('\n' + songs[attributename].title);
+  }
+  songNamesByRanking = 'Unsorted List: \n' + unsortedList + '\n';
+  sortedSongNamesByNameLength = 'Sorted list: \n' + unsortedList.sort((a, b) => b.length - a.length) + '\n';
+
+}
